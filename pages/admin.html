@@ -19,6 +19,13 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  .delete-all-btn {
+    position: fixed;
+    top: 1rem;   /* distance from top */
+    right: 1rem; /* distance from right */
+    z-index: 1000; /* make sure it's on top */
+  }
 </style>
 
 </head>
@@ -30,6 +37,15 @@
       🩺 HealthSpot
     </h1>
   </header>
+
+  <button
+    id="deleteAllBtn"
+    class="delete-all-btn mb-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+    onclick="deleteAllUsers()"
+    style="display: none; position: fixed; top: 1rem; right: 1rem; z-index: 1000;"
+  >
+    Delete All Users
+  </button>
 
   <!-- Login Form Container -->
   <main id="mainContent" class="flex-grow flex items-center justify-center pt-32 px-4">

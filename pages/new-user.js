@@ -75,3 +75,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// The Form password checking
+ const passwordInput = document.getElementById('password');
+  const togglePasswordBtn = document.getElementById('togglePassword');
+  const eyeIcon = document.getElementById('eyeIcon');
+  const passwordHint = document.getElementById('passwordHint');
+
+  togglePasswordBtn.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+        // Toggle eye icon (open/closed)
+    if (isPassword) {
+      // Now changing type to text (show password)
+      eyeIcon.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      `;
+    } else {
+      // Now changing type to password (hide password)
+      eyeIcon.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.056 10.056 0 012.75-4.57m2.193-1.746A9.956 9.956 0 0112 5c4.478 0 8.269 2.943 9.543 7a10.055 10.055 0 01-1.357 2.335M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 3l18 18" />
+      `;
+    }
+
+  });
+
+  passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+
+    const lengthCheck = val.length >= 8;
+    const letterCheck = /[a-zA-Z]/.test(val);
+    const numberCheck = /\d/.test(val);
+    const symbolCheck = /[!@#$%^&*(),.?":{}|<>]/.test(val);
+
+    if (!val) {
+      passwordHint.textContent = 'Use a strong password with at least 8 characters, including letters, numbers & symbols.';
+      passwordHint.className = 'mt-1 text-sm text-green-600 font-semibold';
+    } else if (!lengthCheck) {
+      passwordHint.textContent = 'Password is too short (min 8 characters).';
+      passwordHint.className = 'mt-1 text-sm text-red-600 font-semibold';
+    } else if (!letterCheck) {
+      passwordHint.textContent = 'Add letters to your password.';
+      passwordHint.className = 'mt-1 text-sm text-red-600 font-semibold';
+    } else if (!numberCheck) {
+      passwordHint.textContent = 'Add numbers to your password.';
+      passwordHint.className = 'mt-1 text-sm text-red-600 font-semibold';
+    } else if (!symbolCheck) {
+      passwordHint.textContent = 'Add symbols (e.g. !@#$%) to your password.';
+      passwordHint.className = 'mt-1 text-sm text-red-600 font-semibold';
+    } else {
+      passwordHint.textContent = 'Strong password! 👍';
+      passwordHint.className = 'mt-1 text-sm text-green-600 font-semibold';
+    }
+  });

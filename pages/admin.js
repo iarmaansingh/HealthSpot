@@ -74,12 +74,39 @@ function showAllUsers(users) {
   main.innerHTML = '';
   main.className = 'p-6 mt-20 min-h-screen';
 
+  // Delete all button
+
+  const deleteAllBtn = document.getElementById('deleteAllBtn');
+
+  if (users.length > 0) {
+    deleteAllBtn.style.display = 'inline-block'; // show button
+
+  // Sort users descending by registration time (newest first)
+  users.sort((a, b) => {
+    const timeA = new Date(a.registeredAt).getTime() || 0;
+    const timeB = new Date(b.registeredAt).getTime() || 0;
+    return timeB - timeA;
+  });
+
+  } else {
+    deleteAllBtn.style.display = 'none'; // hide button
+    main.innerHTML = `<p class="text-center text-gray-700 text-xl mt-12">No users available.</p>`;
+    return;
+  }
+
   users.forEach(user => {
     const container = document.createElement('div');
     container.className = 'bg-white p-6 rounded-xl shadow-md mb-6 max-w-3xl mx-auto w-full text-blue-900';
 
     container.innerHTML = `
-      <h3 class="text-xl font-bold mb-4">${user.fullName || 'User'}</h3>
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
+        <button onclick="deleteUser('${user.healthId}')" title="Delete User">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 hover:text-red-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7L5 7M10 11V17M14 11V17M4 7H20M9 7V4H15V7" />
+          </svg>
+        </button>
+      </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-2">
         <div><strong>Health ID:</strong> ${user.healthId || 'N/A'}</div>
         <div><strong>Email:</strong> ${user.email || 'N/A'}</div>
@@ -93,4 +120,76 @@ function showAllUsers(users) {
 
     main.appendChild(container);
   });
+}
+
+async function deleteAllUsers() {
+  if (!confirm("Are you sure you want to delete ALL users? This action cannot be undone.")) return;
+
+  // Default user to prevent blank bin error
+  const defaultUser = {
+    id: "default",
+    fullName: "Default User",
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const updateResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY,
+        'X-Bin-Versioning': 'false'
+      },
+      body: JSON.stringify([defaultUser])
+    });
+
+    if (!updateResponse.ok) {
+      const errorData = await updateResponse.json();
+      console.error('Delete all users error:', errorData);
+      throw new Error(errorData.message || 'Failed to delete all users');
+    }
+
+    alert('All users deleted successfully');
+    await loadAllUsers();
+
+  } catch (error) {
+    alert(`Error deleting all users: ${error.message}`);
+  }
+}
+
+
+
+async function deleteUser(healthId) {
+  if (!confirm("Are you sure you want to delete this user?")) return;
+
+  try {
+    // Fetch latest data
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await response.json();
+    let users = data.record || [];
+
+    // Remove the selected user by healthId
+    users = users.filter(user => user.healthId !== healthId);
+
+    // PUT the updated data back (with versioning disabled)
+    const updateResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY,
+        'X-Bin-Versioning': 'false'
+      },
+      body: JSON.stringify(users)
+    });
+
+    if (!updateResponse.ok) throw new Error('Failed to delete user');
+
+    alert('User deleted successfully');
+    await loadAllUsers();
+
+  } catch (error) {
+    alert(`Error deleting user: ${error.message}`);
+  }
 }
