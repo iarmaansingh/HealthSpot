@@ -113,6 +113,10 @@ function showAllUsers(users) {
         <div><strong>Phone:</strong> ${user.phone || 'N/A'}</div>
         <div><strong>DOB:</strong> ${user.dob || 'N/A'}</div>
         <div><strong>Gender:</strong> ${user.gender || 'N/A'}</div>
+        <div><strong>Blood Group:</strong> ${user.bloodGroup || 'Not Provided'}</div>
+        <div><strong>Allergies:</strong> ${user.allergies || 'Not Provided'}</div>
+        <div><strong>Chronic Conditions:</strong> ${user.conditions || 'Not Provided'}</div>
+        <div><strong>Current Medications:</strong> ${user.medications || 'Not Provided'}</div>
         <div><strong>Medical History:</strong> ${user.medicalHistory || 'None'}</div>
         <div><strong>Registered At:</strong> ${user.registeredAt ? new Date(user.registeredAt).toLocaleString() : 'N/A'}</div>
       </div>
