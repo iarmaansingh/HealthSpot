@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login - HealthSpot</title>
+  <link rel="icon" type="image/png" href="/src/medical-report.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  .loader {
+    border: 8px solid #e5e7eb;
+    border-top: 8px solid #3490dc;
+    border-radius: 9999px;
+    width: 6rem;
+    height: 6rem;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+
+</head>
+<body class="bg-blue-900 min-h-screen flex flex-col">
+
+  <!-- Header with logo -->
+  <header class="p-6 fixed top-0 left-0 w-full z-50">
+    <h1 class="text-4xl font-bold text-white select-none pointer-events-none">
+      🩺 HealthSpot
+    </h1>
+  </header>
+
+  <!-- Login Form Container -->
+  <main id="mainContent" class="flex-grow flex items-center justify-center pt-32 px-4">
+    <form class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full" onsubmit="handleLogin(event)">
+      <h2 class="text-2xl font-semibold text-blue-900 mb-6 text-center">Admin Login</h2>
+
+      <label for="loginId" class="block text-blue-900 font-medium mb-2">Login ID</label>
+      <input 
+        type="text" 
+        id="loginId" 
+        name="loginId" 
+        required 
+        class="w-full mb-4 px-4 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter your login ID"
+      />
+
+      <label for="password" class="block text-blue-900 font-medium mb-2">Password</label>
+      <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        required 
+        class="w-full mb-6 px-4 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter your password"
+      />
+
+      <button 
+        type="submit" 
+        class="w-full bg-blue-700 text-white font-semibold py-3 rounded hover:bg-blue-800 transition"
+      >
+        Login
+      </button>
+    </form>
+  </main>
+
+<script src="admin.js"></script>
+
+</body>
+</html>
