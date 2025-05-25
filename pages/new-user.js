@@ -23,17 +23,20 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-            const newUser = {
-            fullName: document.getElementById('fullName').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            dob: document.getElementById('dob').value,
-            gender: document.getElementById('gender').value,
-            medicalHistory: document.getElementById('medicalHistory').value,
-            healthId: generateHealthId(),
-            password: document.getElementById('password').value,
-            registeredAt: new Date().toISOString()
-            };
+    const newUser = {
+      fullName: document.getElementById('fullName').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      dob: document.getElementById('dob').value,
+      gender: document.getElementById('gender').value,
+      medicalHistory: document.getElementById('medicalHistory').value,
+      bloodGroup: document.getElementById('bloodGroup').value,
+      allergies: document.getElementById('allergies').value,
+      currentMedications: document.getElementById('medications').value,
+      healthId: generateHealthId(),
+      password: document.getElementById('password').value,
+      registeredAt: new Date().toISOString()
+    };
 
         document.getElementById('form-loader').style.display = 'flex';
 
@@ -134,3 +137,51 @@ document.addEventListener('DOMContentLoaded', () => {
       passwordHint.className = 'mt-1 text-sm text-green-600 font-semibold';
     }
   });
+
+
+  // Fill Dummy Data
+
+document.getElementById('fillDummyBtn').addEventListener('click', () => {
+  const names = ['Armaan Khan', 'Riya Patel', 'Kabir Singh', 'Ayesha Kapoor', 'Dev Sharma'];
+  const emails = ['armaan@example.com', 'riya.p@gmail.com', 'kabir.singh@demo.com', 'ayesha.kapoor@test.com', 'dev.sharma@mail.com'];
+  const phones = ['9876543210', '9123456789', '9988776655', '9090909090', '8008008000'];
+  const bloodGroups = ['A+', 'A-', 'B+', 'O+', 'AB+'];
+  const allergies = ['Peanuts', 'Pollen', 'Dust', 'None', 'Gluten'];
+  const conditions = ['Asthma', 'Diabetes', 'Hypertension', 'None'];
+  const medications = ['Paracetamol', 'Insulin', 'Antihistamines', 'None'];
+  const histories = ['Had a surgery in 2018', 'Hospitalized in 2021', 'No major history', 'Minor fracture in 2017'];
+
+  function getRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getRandomPhone() {
+    return '9' + Math.floor(100000000 + Math.random() * 900000000); // Random 10 digit starting with 9
+  }
+
+  function getRandomDate(start, end) {
+    const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    return date.toISOString().split('T')[0];
+  }
+
+  function getRandomPassword() {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&';
+    let pass = '';
+    for (let i = 0; i < 10; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
+  }
+
+  document.getElementById('fullName').value = getRandom(names);
+  document.getElementById('email').value = getRandom(emails);
+  document.getElementById('phone').value = getRandomPhone();
+  document.getElementById('dob').value = getRandomDate(new Date(1980, 0, 1), new Date(2005, 11, 31));
+  document.getElementById('gender').value = ['Male', 'Female', 'Other'][Math.floor(Math.random() * 3)];
+  document.getElementById('bloodGroup').value = getRandom(bloodGroups);
+  document.getElementById('allergies').value = getRandom(allergies);
+  document.getElementById('conditions').value = getRandom(conditions);
+  document.getElementById('medications').value = getRandom(medications);
+  document.getElementById('medicalHistory').value = getRandom(histories);
+  document.getElementById('password').value = getRandomPassword();
+});
