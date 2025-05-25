@@ -66,17 +66,25 @@
       <!-- HealthSpot Text -->
       <h1 class="text-3xl font-bold text-white"> 🩺 HealthSpot</h1>
 
-      <!-- Nav Links -->
-      <nav class="space-x-6 text-blue-100 font-medium text-lg">
-         <a href="#" class="hover:text-white">Home</a>
-         <a href="#" class="hover:text-white">Services</a>
-         <a href="#" class="hover:text-white">Contact</a>
-      </nav>
+        <!-- Nav Links -->
+    <nav class="space-x-6 text-blue-100 font-medium text-lg mr-6">
+      <a href="mailto:thearmaandeep@gmail.com" class="flex items-center space-x-2 hover:text-blue-600">
+        <!-- Small Icon (Example: message icon) -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.985 9.985 0 01-5.5-1.657L3 20l1.657-3.5A9.985 9.985 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span>Contact</span>
+      </a>
+    </nav>
+
+
    </div>
    </header>
 
   <!-- Hero Section -->
-  <section class="py-16 bg-blue-500 px-10">
+  <section class="py-16 bg-blue-900 px-10">
     <div class="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center px-6 space-y-8 md:space-y-0 md:space-x-12">
       <div class="flex-1 space-y-6">
         <!-- Added typing animation class -->
@@ -84,7 +92,7 @@
         <p class="text-lg text-blue-200">Simplify your medical records with HealthSpot’s secure, Aadhaar-like Health ID. Access anytime, anywhere.</p>
         <div>
           <button id="getHealthIDBtn" class="px-6 py-3 bg-white text-blue-800 font-semibold rounded-lg shadow hover:bg-blue-100 transition flex items-center justify-center space-x-2">
-            <span>Get Your Health ID</span>
+            <span>Get Your Health ID ➡️</span>
             <!-- Spinner hidden by default -->
             <span id="spinner" class="spinner hidden"></span>
           </button>
