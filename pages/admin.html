@@ -82,6 +82,26 @@
     </form>
   </main>
 
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-lg text-blue-900 relative">
+      <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-600 hover:text-black">&times;</button>
+      <h2 class="text-2xl font-bold mb-4">Edit User</h2>
+      <form id="editForm" class="grid grid-cols-2 gap-4">
+        <input type="hidden" name="healthId" />
+        <input type="text" name="fullName" placeholder="Full Name" required class="col-span-2 border p-2 rounded" />
+        <input type="email" name="email" placeholder="Email" class="border p-2 rounded" />
+        <input type="text" name="phone" placeholder="Phone" class="border p-2 rounded" />
+        <input type="text" name="bloodGroup" placeholder="Blood Group" class="border p-2 rounded" />
+        <input type="text" name="allergies" placeholder="Allergies" class="border p-2 rounded" />
+        <input type="text" name="conditions" placeholder="Chronic Conditions" class="border p-2 rounded" />
+        <input type="text" name="medications" placeholder="Current Medications" class="border p-2 rounded" />
+        <textarea name="medicalHistory" placeholder="Medical History" class="col-span-2 border p-2 rounded"></textarea>
+        <button type="submit" class="col-span-2 bg-blue-600 text-white p-2 rounded hover:bg-blue-800">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+
 <script src="admin.js"></script>
 
 </body>

@@ -99,14 +99,21 @@ function showAllUsers(users) {
     container.className = 'bg-white p-6 rounded-xl shadow-md mb-6 max-w-3xl mx-auto w-full text-blue-900';
 
     container.innerHTML = `
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
+          <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
+      <div class="flex gap-3">
+        <button onclick="editUser('${user.healthId}')" title="Edit User">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 hover:text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H4v16h16V13m-5-9l5 5m-5-5v5h5" />
+          </svg>
+        </button>
         <button onclick="deleteUser('${user.healthId}')" title="Delete User">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 hover:text-red-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7L5 7M10 11V17M14 11V17M4 7H20M9 7V4H15V7" />
           </svg>
         </button>
       </div>
+    </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-2">
         <div><strong>Health ID:</strong> ${user.healthId || 'N/A'}</div>
         <div><strong>Email:</strong> ${user.email || 'N/A'}</div>
@@ -197,3 +204,94 @@ async function deleteUser(healthId) {
     alert(`Error deleting user: ${error.message}`);
   }
 }
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.add('hidden');
+}
+
+async function editUser(healthId) {
+  try {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await response.json();
+    const users = data.record || [];
+    const user = users.find(u => u.healthId === healthId);
+
+    if (!user) {
+      alert('User not found!');
+      return;
+    }
+
+    // Fill form fields
+    const form = document.getElementById('editForm');
+    form.healthId.value = user.healthId;
+    form.fullName.value = user.fullName || '';
+    form.email.value = user.email || '';
+    form.phone.value = user.phone || '';
+    form.bloodGroup.value = user.bloodGroup || '';
+    form.allergies.value = user.allergies || '';
+    form.conditions.value = user.conditions || '';
+    form.medications.value = user.medications || '';
+    form.medicalHistory.value = user.medicalHistory || '';
+
+    // Show modal
+    document.getElementById('editModal').classList.remove('hidden');
+
+  } catch (error) {
+    alert(`Error fetching user: ${error.message}`);
+  }
+}
+
+document.getElementById('editForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const form = event.target;
+
+  try {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await response.json();
+    let users = data.record || [];
+
+    const index = users.findIndex(u => u.healthId === form.healthId.value);
+    if (index === -1) {
+      alert('User not found');
+      return;
+    }
+
+    // Update user object
+    users[index] = {
+      ...users[index],
+      fullName: form.fullName.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      bloodGroup: form.bloodGroup.value,
+      allergies: form.allergies.value,
+      conditions: form.conditions.value,
+      medications: form.medications.value,
+      medicalHistory: form.medicalHistory.value
+    };
+
+    // PUT updated data back
+    const updateResponse = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY,
+        'X-Bin-Versioning': 'false'
+      },
+      body: JSON.stringify(users)
+    });
+
+    if (!updateResponse.ok) throw new Error('Failed to update user');
+
+    alert('User updated successfully');
+    closeEditModal();
+    await loadAllUsers();
+
+  } catch (error) {
+    alert(`Error updating user: ${error.message}`);
+  }
+});
+
