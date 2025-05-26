@@ -63,62 +63,109 @@ async function loadAllUsers() {
     const data = await response.json();
     const users = data.record || [];
 
+
     showAllUsers(users);
   } catch (error) {
     main.innerHTML = `<p class="text-red-500 text-center">Error loading user data: ${error.message}</p>`;
   }
 }
 
+
+
+
+    function renderSearchBar() {
+      const main = document.getElementById('mainContent');
+
+      // Remove existing search container if any
+      const existingSearch = document.getElementById('searchContainer');
+      if (existingSearch) existingSearch.remove();
+
+      const searchContainer = document.createElement('div');
+      searchContainer.id = 'searchContainer';
+      searchContainer.className = 'max-w-3xl mx-auto mb-6 flex items-center gap-2';
+
+      searchContainer.innerHTML = `
+        <button 
+          onclick="resetSearch()" 
+          class="p-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition"
+          title="Back"
+        >
+          ← Back
+        </button>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search by name or Health ID..." 
+          class="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button 
+          onclick="searchUsers()" 
+          class="p-3 bg-blue-700 hover:bg-blue-800 text-white rounded-lg transition"
+          title="Search"
+        >
+          🔍
+        </button>
+      `;
+
+      main.appendChild(searchContainer);
+
+      document.getElementById('searchInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') searchUsers();
+      });
+    }
+
+    function resetSearch() {
+      const searchInput = document.getElementById('searchInput');
+      if (!searchInput) return;
+
+      searchInput.value = '';
+      // Reload all users
+      loadAllUsers(); // assuming you have a function to load and show all users
+    }
+
 function showAllUsers(users) {
   const main = document.getElementById('mainContent');
   main.innerHTML = '';
   main.className = 'p-6 mt-20 min-h-screen';
 
-  // Delete all button
+  // Add Search Bar at the top
+  renderSearchBar();
 
   const deleteAllBtn = document.getElementById('deleteAllBtn');
 
-  if (users.length > 0) {
-    deleteAllBtn.style.display = 'inline-block'; // show button
-
-  // Sort users descending by registration time (newest first)
-  users.sort((a, b) => {
-    const timeA = new Date(a.registeredAt).getTime() || 0;
-    const timeB = new Date(b.registeredAt).getTime() || 0;
-    return timeB - timeA;
-  });
-
-  } else {
-    deleteAllBtn.style.display = 'none'; // hide button
-    main.innerHTML = `<p class="text-center text-gray-700 text-xl mt-12">No users available.</p>`;
-    return;
-  }
+    if (users.length > 0) {
+      deleteAllBtn.style.display = 'inline-block';
+      users.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
+    } else {
+      deleteAllBtn.style.display = 'none';
+      renderSearchBar();
+      main.innerHTML += `<p class="text-center text-gray-700 text-xl mt-12">No users found matching your search.</p>`;
+      return;
+    }
 
   users.forEach(user => {
     const container = document.createElement('div');
     container.className = 'bg-white p-6 rounded-xl shadow-md mb-6 max-w-3xl mx-auto w-full text-blue-900';
 
-    //Date and Time Formating
     const date = new Date(user.registeredAt);
     const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()} - ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`;
 
-
     container.innerHTML = `
-          <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
-      <div class="flex gap-3">
-        <button onclick="editUser('${user.healthId}')" title="Edit User">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 hover:text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H4v16h16V13m-5-9l5 5m-5-5v5h5" />
-          </svg>
-        </button>
-        <button onclick="deleteUser('${user.healthId}')" title="Delete User">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 hover:text-red-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7L5 7M10 11V17M14 11V17M4 7H20M9 7V4H15V7" />
-          </svg>
-        </button>
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
+        <div class="flex gap-3">
+          <button onclick="editUser('${user.healthId}')" title="Edit User">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 hover:text-green-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4H4v16h16V13m-5-9l5 5m-5-5v5h5" />
+            </svg>
+          </button>
+          <button onclick="deleteUser('${user.healthId}')" title="Delete User">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 hover:text-red-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7L5 7M10 11V17M14 11V17M4 7H20M9 7V4H15V7" />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
       <div class="grid grid-cols-2 gap-x-6 gap-y-2">
         <div><strong>Health ID:</strong> ${user.healthId || 'N/A'}</div>
         <div><strong>Email:</strong> ${user.email || 'N/A'}</div>
@@ -137,6 +184,52 @@ function showAllUsers(users) {
     main.appendChild(container);
   });
 }
+
+async function searchUsers() {
+  const searchInput = document.getElementById('searchInput');
+  if (!searchInput) {
+    console.error("Search input not found!");
+    return;
+  }
+
+  const query = searchInput.value.trim().toLowerCase();
+  const main = document.getElementById('mainContent');
+
+  try {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    if (!response.ok) throw new Error('Failed to fetch user data');
+    const data = await response.json();
+    const users = data.record || [];
+
+    if (!query) {
+      showAllUsers(users);
+      return;
+    }
+
+    const filteredUsers = users.filter(user => {
+      const fullName = (user.fullName || '').toLowerCase();
+      const healthId = (user.healthId || '').toLowerCase();
+      return fullName.includes(query) || healthId.includes(query);
+    });
+
+    if (filteredUsers.length === 0) {
+      main.innerHTML = '';
+      main.className = 'p-6 mt-20 min-h-screen';
+      renderSearchBar();
+      main.innerHTML += `<p class="text-center text-gray-700 text-xl mt-12">No users found matching "${query}".</p>`;
+      return;
+    }
+
+    showAllUsers(filteredUsers);
+
+  } catch (error) {
+    main.innerHTML = `<p class="text-red-500 text-center">Error loading user data: ${error.message}</p>`;
+  }
+}
+
+
 
 async function deleteAllUsers() {
   if (!confirm("Are you sure you want to delete ALL users? This action cannot be undone.")) return;
