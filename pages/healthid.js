@@ -57,11 +57,11 @@ function loadUserDetails() {
     </div>
     <div class="flex justify-between border-b border-indigo-200 pb-2">
       <span class="font-semibold">Chronic Conditions:</span>
-      <span class="font-mono">${user.conditions || 'Not Provided'}</span>
+      <span class="font-mono">${user.chronicConditions || 'Not Provided'}</span>
     </div>
     <div class="flex justify-between border-b border-indigo-200 pb-2">
       <span class="font-semibold">Current Medications:</span>
-      <span class="font-mono">${user.medications || 'Not Provided'}</span>
+      <span class="font-mono">${user.currentMedications || 'Not Provided'}</span>
     </div>
     <div class="flex justify-between border-b border-indigo-200 pb-2">
       <span class="font-semibold">Medical History:</span>
@@ -74,9 +74,9 @@ function loadUserDetails() {
   `;
 
   // Update ID Card Section
-  document.getElementById('cardHealthId').textContent = `🪪 ${formatHealthId(user.healthId)}`;
-  document.getElementById('cardName').textContent = `👤 ${user.fullName}`;
-  document.getElementById('cardAge').textContent = `🎂 Age: ${calculateAge(user.dob)}`;
+  document.getElementById('cardHealthId').textContent = formatHealthId(user.healthId);
+  document.getElementById('cardName').textContent = user.fullName;
+  document.getElementById('cardAge').textContent = calculateAge(user.dob);
 }
 
     function logout() {

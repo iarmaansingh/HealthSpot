@@ -98,6 +98,11 @@ function showAllUsers(users) {
     const container = document.createElement('div');
     container.className = 'bg-white p-6 rounded-xl shadow-md mb-6 max-w-3xl mx-auto w-full text-blue-900';
 
+    //Date and Time Formating
+    const date = new Date(user.registeredAt);
+    const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()} - ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+
+
     container.innerHTML = `
           <div class="flex justify-between items-center mb-4">
       <h3 class="text-xl font-bold">${user.fullName || 'User'}</h3>
@@ -122,10 +127,10 @@ function showAllUsers(users) {
         <div><strong>Gender:</strong> ${user.gender || 'N/A'}</div>
         <div><strong>Blood Group:</strong> ${user.bloodGroup || 'Not Provided'}</div>
         <div><strong>Allergies:</strong> ${user.allergies || 'Not Provided'}</div>
-        <div><strong>Chronic Conditions:</strong> ${user.conditions || 'Not Provided'}</div>
-        <div><strong>Current Medications:</strong> ${user.medications || 'Not Provided'}</div>
+        <div><strong>Chronic Conditions:</strong> ${user.chronicConditions || 'Not Provided'}</div>
+        <div><strong>Current Medications:</strong> ${user.currentMedications || 'Not Provided'}</div>
         <div><strong>Medical History:</strong> ${user.medicalHistory || 'None'}</div>
-        <div><strong>Registered At:</strong> ${user.registeredAt ? new Date(user.registeredAt).toLocaleString() : 'N/A'}</div>
+        <div><strong>Registered At:</strong> ${user.registeredAt ? formattedDate : 'N/A'}</div>
       </div>
     `;
 
@@ -231,8 +236,8 @@ async function editUser(healthId) {
     form.phone.value = user.phone || '';
     form.bloodGroup.value = user.bloodGroup || '';
     form.allergies.value = user.allergies || '';
-    form.conditions.value = user.conditions || '';
-    form.medications.value = user.medications || '';
+    form.conditions.value = user.chronicConditions || '';
+    form.medications.value = user.currentMedications || '';
     form.medicalHistory.value = user.medicalHistory || '';
 
     // Show modal

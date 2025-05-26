@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       medicalHistory: document.getElementById('medicalHistory').value,
       bloodGroup: document.getElementById('bloodGroup').value,
       allergies: document.getElementById('allergies').value,
+      chronicConditions: document.getElementById('conditions').value,  // <-- this was missing
       currentMedications: document.getElementById('medications').value,
       healthId: generateHealthId(),
       password: document.getElementById('password').value,
