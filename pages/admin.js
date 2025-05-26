@@ -133,9 +133,20 @@ function showAllUsers(users) {
 
   const deleteAllBtn = document.getElementById('deleteAllBtn');
 
-    if (users.length > 0) {
+        if (users.length > 0) {
       deleteAllBtn.style.display = 'inline-block';
-      users.sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt));
+
+      users.sort((a, b) => {
+        // Check if a or b is the default user (no fullName or 'User')
+        const aIsDefault = !a.fullName || a.fullName === 'Default User';
+        const bIsDefault = !b.fullName || b.fullName === 'Default User';
+
+        if (aIsDefault && !bIsDefault) return 1;   // a should come after b
+        if (!aIsDefault && bIsDefault) return -1;  // a should come before b
+
+        // If both are default or both not default, sort by date desc
+        return new Date(b.registeredAt) - new Date(a.registeredAt);
+      });
     } else {
       deleteAllBtn.style.display = 'none';
       renderSearchBar();
@@ -238,7 +249,7 @@ async function deleteAllUsers() {
   const defaultUser = {
     id: "default",
     fullName: "Default User",
-    createdAt: new Date().toISOString()
+    registeredAt: new Date().toISOString()
   };
 
   try {
