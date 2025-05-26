@@ -22,3 +22,14 @@ This website is hosted at - [Click Here](https://myhealthspot.netlify.app/)
 Armaan <br>
 Sanchit  <br>
 
+
+## JSONBin Credentials 
+
+Gmail - healthspot92@gmail.com
+Password - healthspot92@armaan
+
+
+API Key - $2a$10$zyQpm6tNv6SvPgWM2E1D1eDfvL1zWu8pc2YI1prGoUikZKK4Zwhd.
+
+Bin ID - 68344ecd8a456b7966a583dd
+
