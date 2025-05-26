@@ -273,8 +273,8 @@ document.getElementById('editForm').addEventListener('submit', async (event) => 
       phone: form.phone.value,
       bloodGroup: form.bloodGroup.value,
       allergies: form.allergies.value,
-      conditions: form.conditions.value,
-      medications: form.medications.value,
+      chronicConditions: form.conditions.value,
+      currentMedications: form.medications.value,
       medicalHistory: form.medicalHistory.value
     };
 
