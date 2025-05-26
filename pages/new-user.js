@@ -14,8 +14,8 @@ function generateHealthId() {
 }
 
 
-const BIN_ID = '68332e128a456b7966a52e51';
-const API_KEY = '$2a$10$MdBoEezWDni8FxWfT8hSh..DEOmvGRx2b5zpfgODYjF5zgSIjkaV2';
+const BIN_ID = '68344ecd8a456b7966a583dd';
+const API_KEY = '$2a$10$zyQpm6tNv6SvPgWM2E1D1eDfvL1zWu8pc2YI1prGoUikZKK4Zwhd.';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
