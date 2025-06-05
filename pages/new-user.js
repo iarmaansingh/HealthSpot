@@ -28,6 +28,15 @@ function showOtpNotification() {
   }, 3500); // hide after 3.5 seconds
 }
 
+function showPopup(message) {
+  document.getElementById('popupMessage').innerText = message;
+  document.getElementById('messagePopup').classList.remove('hidden');
+}
+
+function closePopup() {
+  document.getElementById('messagePopup').classList.add('hidden');
+}
+
 
 
 const BIN_ID = '68344ecd8a456b7966a583dd';
@@ -72,6 +81,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+
+      // Check the email exist in database or not 
+
+          try {
+      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: { 'X-Master-Key': API_KEY }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data.');
+      }
+
+      const data = await response.json();
+      const users = Array.isArray(data.record) ? data.record : [];
+
+      const emailExists = users.some(user => user.email === email);
+
+      if (emailExists) {
+        showPopup('🚫 This email is already registered.');
+        return; // Stop here if email exists
+      }
+
+    } catch (error) {
+      console.error(error);
+      showPopup('❌ Failed to fetch user data.');
+      return;
+    }
+
       // Increment OTP request count
       otpRequestCount++;
 
@@ -84,12 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
         otp: generatedOtp,
       };
 
+
       const serviceID = 'service_v7qsk6z';
       const templateID = 'template_rtepvsd';
 
       try {
         showOtpNotification();
-        await emailjs.send( serviceID, templateID , templateParams);
+        // await emailjs.send( serviceID, templateID , templateParams);
         otpSection.style.display = 'flex';
         otpStatus.innerHTML = `OTP sent!<br>${MAX_OTP_REQUESTS - otpRequestCount} attempt(s) left.`;
         otpStatus.style.color = 'green';
