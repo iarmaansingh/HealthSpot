@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const otpStatus = document.getElementById('otpStatus');
 
     let otpRequestCount = 0;
-    const MAX_OTP_REQUESTS = 2;
+    const MAX_OTP_REQUESTS = 1;
 
     function isValidEmail(email) {
       // Simple email validation regex
@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Generate 4-digit OTP
       generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-      console.log('Generated OTP:', generatedOtp); // Remove for production
 
       // Send OTP email using EmailJS
       const templateParams = {
