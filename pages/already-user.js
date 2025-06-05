@@ -7,16 +7,34 @@ window.addEventListener('load', () => {
   }, 1000);
 });
 
+function showPopup(message) {
+  document.getElementById('popupMessage').innerText = message;
+  document.getElementById('messagePopup').classList.remove('hidden');
+}
+
+function closePopup() {
+  document.getElementById('messagePopup').classList.add('hidden');
+}
+
 
 const BIN_ID = '68344ecd8a456b7966a583dd';
 const API_KEY = '$2a$10$zyQpm6tNv6SvPgWM2E1D1eDfvL1zWu8pc2YI1prGoUikZKK4Zwhd.';
 
+// Track login attempts
+let loginAttempts = 0;
+const maxAttempts = 3;
+
 async function loginUser() {
-  const healthId = document.getElementById('loginHealthId').value.trim();
+  const email = document.getElementById('loginEmailId').value.trim();
   const password = document.getElementById('loginPassword').value.trim();
 
-  if (!healthId || !password) {
-    alert('Please enter both Health ID and Password');
+  if (!email || !password) {
+    showPopup('⚠️ Please enter both Email and Password.');
+    return;
+  }
+
+  if (loginAttempts >= maxAttempts) {
+    showPopup('🚫 You have reached the maximum number of login attempts.');
     return;
   }
 
@@ -25,25 +43,33 @@ async function loginUser() {
       headers: { 'X-Master-Key': API_KEY }
     });
 
-    const data = await response.json();
-    const users = data.record || [];
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data.');
+    }
 
-    const user = users.find(u => u.healthId === healthId && u.password === password);
+    const data = await response.json();
+    const users = Array.isArray(data.record) ? data.record : [];
+
+    const user = users.find(u => u.email === email && u.password === password);
 
     if (user) {
-      // Show popup modal
       const popup = document.getElementById('popup');
       popup.classList.remove('hidden');
 
-      // Save user data in session storage
       sessionStorage.setItem('loggedInUser', JSON.stringify(user));
 
-      // Wait 2 seconds before redirect
       setTimeout(() => {
         window.location.href = 'healthid.html';
       }, 2000);
     } else {
-      alert('❌ No matching user found.');
+      loginAttempts++;
+      const remainingAttempts = maxAttempts - loginAttempts;
+
+      if (remainingAttempts > 0) {
+        showPopup(`❌ Invalid credentials. ${remainingAttempts} attempt(s) left.`);
+      } else {
+        showPopup('🚫 You have reached the maximum number of login attempts.');
+      }
     }
   } catch (error) {
     console.error(error);

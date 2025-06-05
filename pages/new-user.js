@@ -13,15 +13,125 @@ function generateHealthId() {
   return Math.floor(100000000 + Math.random() * 900000000).toString();
 }
 
+function isValidEmail(email) {
+  // Basic email regex
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function showOtpNotification() {
+  const notification = document.getElementById('otpNotification');
+  notification.style.display = 'block';
+
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 3500); // hide after 3.5 seconds
+}
+
+
 
 const BIN_ID = '68344ecd8a456b7966a583dd';
 const API_KEY = '$2a$10$zyQpm6tNv6SvPgWM2E1D1eDfvL1zWu8pc2YI1prGoUikZKK4Zwhd.';
 
+
+let passwordFlag = false;
+let generatedOtp = null;
+let emailVerified = false;
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
 
+    const emailInput = document.getElementById('email');
+    const getOtpBtn = document.getElementById('getOtpBtn');
+    const otpSection = document.getElementById('otpSection');
+    const otpInput = document.getElementById('otpInput');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const otpStatus = document.getElementById('otpStatus');
+
+    let otpRequestCount = 0;
+    const MAX_OTP_REQUESTS = 2;
+
+    function isValidEmail(email) {
+      // Simple email validation regex
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    getOtpBtn.addEventListener('click', async () => {
+      if (otpRequestCount >= MAX_OTP_REQUESTS) {
+        alert('You have reached the maximum number of OTP requests.');
+        getOtpBtn.disabled = true;
+        return;
+      }
+
+      const email = emailInput.value.trim();
+
+      if (!isValidEmail(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      // Increment OTP request count
+      otpRequestCount++;
+
+      // Generate 4-digit OTP
+      generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+      console.log('Generated OTP:', generatedOtp); // Remove for production
+
+      // Send OTP email using EmailJS
+      const templateParams = {
+        to_email: email,
+        otp: generatedOtp,
+      };
+
+      const serviceID = 'service_v7qsk6z';
+      const templateID = 'template_rtepvsd';
+
+      try {
+        showOtpNotification();
+        await emailjs.send( serviceID, templateID , templateParams);
+        otpSection.style.display = 'flex';
+        otpStatus.innerHTML = `OTP sent!<br>${MAX_OTP_REQUESTS - otpRequestCount} attempt(s) left.`;
+        otpStatus.style.color = 'green';
+        emailVerified = false;
+
+        if (otpRequestCount === MAX_OTP_REQUESTS) {
+          getOtpBtn.disabled = true;
+        }
+      } catch (error) {
+        alert('Failed to send OTP. Please try again later.');
+      }
+    });
+
+    verifyOtpBtn.addEventListener('click', () => {
+      if (otpInput.value === generatedOtp) {
+        otpStatus.textContent = 'Email verified successfully! ✔️';
+        otpStatus.style.color = 'green';
+        emailVerified = true;
+        getOtpBtn.disabled = true;
+        otpInput.disabled = true;
+        verifyOtpBtn.disabled = true;
+      } else {
+        otpStatus.textContent = 'Incorrect OTP. Try again.';
+        otpStatus.style.color = 'red';
+        emailVerified = false;
+      }
+    });
+
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+      if (!passwordFlag) {
+      alert('❌ Weak Password...');
+      return;
+    }
+
+      if (!emailVerified) {
+        alert('Please verify your email first by entering the correct OTP.');
+        return;
+      }
 
     const newUser = {
       fullName: document.getElementById('fullName').value,
@@ -136,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       passwordHint.textContent = 'Strong password! 👍';
       passwordHint.className = 'mt-1 text-sm text-green-600 font-semibold';
+      passwordFlag = true;
     }
   });
 
