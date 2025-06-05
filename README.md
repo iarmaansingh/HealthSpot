@@ -18,12 +18,18 @@ This website is hosted at - [Click Here](https://myhealthspot.netlify.app/)
 ![WhatsApp Image 2024-03-05 at 13 03 46_7d990782](https://github.com/iarmaansingh/HealthSpot/assets/141659365/696f9577-381c-47c2-ac5d-98468f4f8327)
 
 
-## Authors 
-Armaan <br>
-Sanchit  <br>
+
 
 
 ## JSONBin Credentials 
+
+**Gmail:** healthspot92@gmail.com  
+
+**Password:** healthspot92@armaan  
+
+
+
+## EmailJS Credentials 
 
 **Gmail:** healthspot92@gmail.com  
 
