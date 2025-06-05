@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const emailExists = users.some(user => user.email === email);
 
       if (emailExists) {
-        showPopup('🚫 This email is already registered.');
+        showPopup('⚠️ This email is already registered.');
         return; // Stop here if email exists
       }
 
