@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         showOtpNotification();
-        // await emailjs.send( serviceID, templateID , templateParams);
+        await emailjs.send( serviceID, templateID , templateParams);
         otpSection.style.display = 'flex';
         otpStatus.innerHTML = `OTP sent!<br>${MAX_OTP_REQUESTS - otpRequestCount} attempt(s) left.`;
         otpStatus.style.color = 'green';
