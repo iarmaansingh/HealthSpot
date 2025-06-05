@@ -323,7 +323,6 @@ document.getElementById('fillDummyBtn').addEventListener('click', () => {
   }
 
   document.getElementById('fullName').value = getRandom(names);
-  document.getElementById('email').value = getRandom(emails);
   document.getElementById('phone').value = getRandomPhone();
   document.getElementById('dob').value = getRandomDate(new Date(1980, 0, 1), new Date(2005, 11, 31));
   document.getElementById('gender').value = ['Male', 'Female', 'Other'][Math.floor(Math.random() * 3)];
