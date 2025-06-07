@@ -142,9 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         alert('Failed to send OTP. Please try again later.');
       }
-    });
   };
-
+    });
 
 
 
