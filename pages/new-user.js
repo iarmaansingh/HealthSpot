@@ -69,81 +69,79 @@ document.addEventListener('DOMContentLoaded', () => {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    getOtpBtn.addEventListener('click', async () => {
-      if (otpRequestCount >= MAX_OTP_REQUESTS) {
-        alert('You have reached the maximum number of OTP requests.');
-        getOtpBtn.disabled = true;
-        return;
-      }
+getOtpBtn.addEventListener('click', async () => {
+  if (otpRequestCount >= MAX_OTP_REQUESTS) {
+    alert('You have reached the maximum number of OTP requests.');
+    getOtpBtn.disabled = true;
+    return;
+  }
 
-      const email = emailInput.value.trim();
+  const email = emailInput.value.trim();
 
-      if (!isValidEmail(email)) {
-        alert('Please enter a valid email address.');
-        return;
-      }
+  if (!isValidEmail(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
 
+  // Check if email exists in database
+  try {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
 
-      // Check the email exist in database or not 
+    if (!response.ok) {
+      throw new Error('Failed to fetch user data.');
+    }
 
-          try {
-      const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-        headers: { 'X-Master-Key': API_KEY }
-      });
+    const data = await response.json();
+    const users = Array.isArray(data.record) ? data.record : [];
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data.');
-      }
+    const emailExists = users.some(user => user.email === email);
 
-      const data = await response.json();
-      const users = Array.isArray(data.record) ? data.record : [];
-
-      const emailExists = users.some(user => user.email === email);
-
-      if (emailExists) {
-        showPopup('⚠️ This email is already registered.');
-        return; // Stop here if email exists
-      }
-
-    } catch (error) {
-      console.error(error);
-      showPopup('❌ Failed to fetch user data.');
+    if (emailExists) {
+      showPopup('⚠️ This email is already registered.');
       return;
     }
 
-      // Increment OTP request count
-      otpRequestCount++;
+  } catch (error) {
+    console.error(error);
+    showPopup('❌ Failed to fetch user data.');
+    return;
+  }
 
-   // If OTP already generated for this session, skip generation
+  // If OTP already generated for this session, skip generation
   if (!generatedOtp) {
     generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
 
-          // Send OTP email using EmailJS
-      const templateParams = {
-        to_email: email,
-        otp: generatedOtp,
-      };
+    // Send OTP email using EmailJS
+    const templateParams = {
+      to_email: email,
+      otp: generatedOtp,
+    };
 
+    const serviceID = 'service_v7qsk6z';
+    const templateID = 'template_rtepvsd';
 
-      const serviceID = 'service_v7qsk6z';
-      const templateID = 'template_rtepvsd';
+    try {
+      showOtpNotification();
+      await emailjs.send(serviceID, templateID, templateParams);
+      otpSection.style.display = 'flex';
+      otpStatus.innerHTML = `OTP sent!`;
+      otpStatus.style.color = 'green';
+      emailVerified = false;
 
-      try {
-        showOtpNotification();
-        await emailjs.send( serviceID, templateID , templateParams);
-        otpSection.style.display = 'flex';
-        otpStatus.innerHTML = `OTP sent!`;
-        otpStatus.style.color = 'green';
-        emailVerified = false;
+      // Increment only if OTP sent successfully
+      otpRequestCount++;
 
-        if (otpRequestCount === MAX_OTP_REQUESTS) {
-          getOtpBtn.disabled = true;
-        }
-      } catch (error) {
-        alert('Failed to send OTP. Please try again later.');
+      if (otpRequestCount === MAX_OTP_REQUESTS) {
+        getOtpBtn.disabled = true;
       }
-  };
-    });
+
+    } catch (error) {
+      alert('Failed to send OTP. Please try again later.');
+    }
+  }
+});
 
 
 
