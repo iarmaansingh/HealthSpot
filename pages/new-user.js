@@ -59,8 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const verifyOtpBtn = document.getElementById('verifyOtpBtn');
     const otpStatus = document.getElementById('otpStatus');
 
+    let generatedOtp = ''; // Declare globally
     let otpRequestCount = 0;
     const MAX_OTP_REQUESTS = 1;
+    let emailVerified = false;
 
     function isValidEmail(email) {
       // Simple email validation regex
@@ -112,10 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // Increment OTP request count
       otpRequestCount++;
 
-      // Generate 4-digit OTP
-      generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+   // If OTP already generated for this session, skip generation
+  if (!generatedOtp) {
+    generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
 
-      // Send OTP email using EmailJS
+          // Send OTP email using EmailJS
       const templateParams = {
         to_email: email,
         otp: generatedOtp,
@@ -129,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showOtpNotification();
         await emailjs.send( serviceID, templateID , templateParams);
         otpSection.style.display = 'flex';
-        otpStatus.innerHTML = `OTP sent!<br>${MAX_OTP_REQUESTS - otpRequestCount} attempt(s) left.`;
+        otpStatus.innerHTML = `OTP sent!`;
         otpStatus.style.color = 'green';
         emailVerified = false;
 
@@ -140,6 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Failed to send OTP. Please try again later.');
       }
     });
+  };
+
+
+
 
     verifyOtpBtn.addEventListener('click', () => {
       if (otpInput.value === generatedOtp) {
